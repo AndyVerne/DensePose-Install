@@ -161,26 +161,42 @@ $ gcc -v
 
 1. 先克隆修改适配Python3.6环境的DensePose项目
 
-~~~
-$ git clone https://github.com/Johnqczhang/DensePose $DENSEPOSE
-~~~
+   ~~~
+   $ git clone https://github.com/Johnqczhang/DensePose $DENSEPOSE
+   ~~~
 
 2. 设置并建立Python模块
 
-~~~
-$ cd $DENSEPOSE
-$ python setup.py develop
-~~~
+   ~~~
+   $ cd $DENSEPOSE
+   $ python setup.py develop
+   ~~~
 
 3. 验证Detectron tests通过 
 
-~~~
-$ python $DENSEPOSE/detectron/tests/test_spatial_narrow_as_op.py
-~~~
+   ~~~
+   $ python $DENSEPOSE/detectron/tests/test_spatial_narrow_as_op.py
+   ~~~
+
+   通过结果：
+
+   ~~~
+   [E init_intrinsics_check.cc:43] CPU feature avx is present on your machine, but the Caffe2 binary is not compiled with it. It means you may not get the full speed of your CPU.
+   [E init_intrinsics_check.cc:43] CPU feature avx2 is present on your machine, but the Caffe2 binary is not compiled with it. It means you may not get the full speed of your CPU.
+   [E init_intrinsics_check.cc:43] CPU feature fma is present on your machine, but the Caffe2 binary is not compiled with it. It means you may not get the full speed of your CPU.
+   Found Detectron ops lib: /root/anaconda3/envs/Densepose/lib/python3.6/site-packages/torch/lib/libcaffe2_detectron_ops_gpu.so
+   ...
+   ----------------------------------------------------------------------
+   Ran 3 tests in 3.263s
+   
+   OK
+   ~~~
+
+   
 
 4. 对DensePose里的CMakeList进行编辑，下载[CMakeList.txt](https://github.com/Johnqczhang/densepose_installation/blob/master/CMakeLists.txt) , 并将文件的路径对应修改
 
-样例：
+  样例：
 
 ~~~
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
@@ -254,9 +270,106 @@ endif()
 
 ~~~
 
-5. 因为一些math、threadpool库的丢失原因
+5. 因为一些math、threadpool库的丢失原因，而pytorch新版本源码的math与threadpool与旧版不兼容，故推荐下载旧版本的[math](https://github.com/AndyVerne/DensePose-Install/tree/main/math)和[threadpool](https://github.com/AndyVerne/DensePose-Install/tree/main/threadpool)放于/path/to/CAFFE2_INCLUDE_PATH/utils/下
 
-strings /opt/gcc/lib64/libstdc++.so.6 | grep CXXABI
+   
 
-gcc 4.9.2的版本libstdc++.so.6过老，导致库缺少，从/path/to/anaconda/lib/libstdc++.so.6复制覆盖/path/to/gcc_installed/lib64/libstdc++.so.6即可编译成功
+6. 编译
+
+   ~~~
+   $ cd $DENSEPOSE/build
+   $ cmake .. && make
+   ~~~
+
+7. 因为gcc4.9.2版本过低，cmake .. && make可能遇见的**问题** 
+
+   ~~~
+   cmake: /path/to/gcc_install/lib64/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by cmake)
+   cmake: /path/to/gcc_install/lib64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by cmake)
+   cmake: /path/to/gcc_install/lib64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by /usr/lib/x86_64-linux-gnu/libjsoncpp.so.1)
+   ~~~
+
+   查看动态库(CXXABI,GLIBCXX)
+
+   ~~~
+   strings /path/to/gcc_install/lib64/libstdc++.so.6 | grep CXXABI
+   ~~~
+
+   gcc 4.9.2的版本libstdc++.so.6过老，导致库缺少，
+
+   这里推荐/path/to/anaconda/lib/libstdc++.so.6替换/path/to/gcc_install/lib64/libstdc++.so.6
+
+8. 检查custom operator tests是否通过：
+
+   ~~~
+   $ python $DENSEPOSE/detectron/tests/test_zero_even_op.py
+   ~~~
+
+   成功编译后会有以下结果：
+
+   ~~~
+   $ python detectron/tests/test_zero_even_op.py
+   [E init_intrinsics_check.cc:43] CPU feature avx is present on your machine, but the Caffe2 binary is not compiled with it. It means you may not get the full speed of your CPU.
+   [E init_intrinsics_check.cc:43] CPU feature avx2 is present on your machine, but the Caffe2 binary is not compiled with it. It means you may not get the full speed of your CPU.
+   [E init_intrinsics_check.cc:43] CPU feature fma is present on your machine, but the Caffe2 binary is not compiled with it. It means you may not get the full speed of your CPU.
+   ............
+   ----------------------------------------------------------------------
+   Ran 12 tests in 3.155s
+   
+   OK
+   ~~~
+
+   
+
+## Fetch DensePose data.
+
+Get necessary files to run, train and evaluate DensePose.
+
+```
+cd $DENSEPOSE/DensePoseData
+bash get_densepose_uv.sh
+```
+
+For training, download the DensePose-COCO dataset:
+
+```
+bash get_DensePose_COCO.sh
+```
+
+For evaluation, get the necessary files:
+
+```
+bash get_eval_data.sh
+```
+
+## Setting-up the COCO dataset.
+
+Create a symlink for the COCO dataset in your `datasets/data` folder.
+
+```
+ln -s /path/to/coco $DENSEPOSE/detectron/datasets/data/coco
+```
+
+Create symlinks for the DensePose-COCO annotations
+
+```
+ln -s $DENSEPOSE/DensePoseData/DensePose_COCO/densepose_coco_2014_minival.json $DENSEPOSE/detectron/datasets/data/coco/annotations/
+ln -s $DENSEPOSE/DensePoseData/DensePose_COCO/densepose_coco_2014_train.json $DENSEPOSE/detectron/datasets/data/coco/annotations/
+ln -s $DENSEPOSE/DensePoseData/DensePose_COCO/densepose_coco_2014_valminusminival.json $DENSEPOSE/detectron/datasets/data/coco/annotations/
+```
+
+Your local COCO dataset copy at `/path/to/coco` should have the following directory structure:
+
+```
+coco
+|_ coco_train2014
+|  |_ <im-1-name>.jpg
+|  |_ ...
+|  |_ <im-N-name>.jpg
+|_ coco_val2014
+|_ ...
+|_ annotations
+   |_ instances_train2014.json
+   |_ ...
+```
 
