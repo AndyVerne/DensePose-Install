@@ -35,23 +35,23 @@ $ export CONDA_PKGS_PATH=/path/to/anaconda3/envs/your_env_name/lib/pythonx.x/sit
 2.依次安装对应需要的Python依赖包(install the following python packages under the created environment:)
 
 ~~~
-conda install -y numpy setuptools cffi typing pyyaml=3.13 mkl=2019.1 mkl-include=2019.1
+$ conda install -y numpy setuptools cffi typing pyyaml=3.13 mkl=2019.1 mkl-include=2019.1
 ~~~
 
 ~~~
-conda install -y cython matplotlib
+$ conda install -y cython matplotlib
 ~~~
 
 ~~~
-conda install -y pydot future networkx
+$ conda install -y pydot future networkx
 ~~~
 
 ~~~
-conda install -y opencv mock scipy h5py
+$ conda install -y opencv mock scipy h5py
 ~~~
 
 ~~~
-pip install chumpy
+$ pip install chumpy
 ~~~
 
 
@@ -73,13 +73,13 @@ $ make install
 Pytorch版本最好为1.1.0，新版本可能会出问题，cudatoolkit版本请参照对应系统版本
 
 ~~~
-conda install pytorch==1.1.0 torchvision==0.3.0 cudatoolkit=10.0 -c pytorch
+$ conda install pytorch==1.1.0 torchvision==0.3.0 cudatoolkit=10.0 -c pytorch
 ~~~
 
 因为版本原因，对应安装protobuf，版本过新与过久都会引起后续编译问题
 
 ~~~
-conda install protobuf=3.6.1
+$ conda install protobuf=3.6.1
 ~~~
 
 ### Caffe2安装验证
