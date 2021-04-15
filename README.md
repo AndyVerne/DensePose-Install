@@ -1,6 +1,6 @@
-# DensePose-Install
+# DensePose-Install（DensePose安装）
 The instructions for installing DensePose. Install before checking that the fuction of [Detectron2-DensePose](https://github.com/facebookresearch/detectron2/tree/master/projects/DensePose) wheather meets your demand. Because the process of installing Detectron2 is way much easier. 
-# DensePose安装
+# 
 
 *此为DensePose旧版本安装,新版本安装请直接参照[Detectron2](https://github.com/facebookresearch/detectron2)安装*
 
