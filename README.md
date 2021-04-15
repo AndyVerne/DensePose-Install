@@ -6,7 +6,7 @@ The instructions for installing DensePose. Install before checking that the fuct
 
 
 
-## 安装环境：
+## 安装环境(Environment)：
 
 Anaconda（Python 3.6）
 
@@ -16,22 +16,22 @@ Pytorch 1.1.0
 
 
 
-## 安装依赖项：
+## 安装依赖项(Install Dependencies)：
 
-1.通过conda创建python 3.6环境
+1.通过conda创建python 3.6环境(build python3.6 environment via conda) 
 
 ```
 $ conda create -y -n your_env_name python=3.6
 ```
 
-为了后续安装指导方便，设立一些环境变量
+为了后续安装指导方便，设立一些环境变量(For convenience in the following instructions, we set some environment variables accordingly:)
 
 ~~~
 $ export CONDA_ENV_PATH=/path/to/anaconda3/envs/your_env_name
 $ export CONDA_PKGS_PATH=/path/to/anaconda3/envs/your_env_name/lib/pythonx.x/site-packages
 ~~~
 
-2.依次安装对应需要的Python依赖包
+2.依次安装对应需要的Python依赖包(install the following python packages under the created environment:)
 
 ~~~
 conda install -y numpy setuptools cffi typing pyyaml=3.13 mkl=2019.1 mkl-include=2019.1
